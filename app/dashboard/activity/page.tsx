@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Eye, Clock, MapPin } from "lucide-react";
 import { getAuthToken } from "@/components/getToken";
+import Navbar from "@/components/header";
 
 interface Activity {
   id: string;
@@ -133,6 +134,7 @@ export default function ActivityPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <Navbar />
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Recent Activity
