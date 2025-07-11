@@ -217,6 +217,8 @@ export default function AlertsPage() {
 
   if (loading) {
     return (
+      <div>
+        <Navbar />
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -225,11 +227,15 @@ export default function AlertsPage() {
           <div className="text-center py-20">Loading alerts...</div>
         </div>
       </div>
+      <Footer />
+      </div>
     );
   }
 
   if (error) {
     return (
+      <div>
+        <Navbar />
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -237,6 +243,7 @@ export default function AlertsPage() {
           </h1>
           <div className="text-center py-20 text-red-500">{error}</div>
         </div>
+      </div>
       </div>
     );
   }

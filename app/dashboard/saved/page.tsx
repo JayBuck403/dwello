@@ -7,6 +7,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, Eye, Phone } from "lucide-react";
 import { getAuthToken } from "@/components/getToken";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/header";
+
 
 interface Property {
   id: string;
@@ -104,6 +107,7 @@ export default function SavedPropertiesPage() {
 
   if (loading) {
     return (
+      <div><Navbar />
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -112,11 +116,15 @@ export default function SavedPropertiesPage() {
           <div className="text-center py-20">Loading saved properties...</div>
         </div>
       </div>
+      <Footer />
+      </div>
     );
   }
 
   if (error) {
     return (
+      <div>
+        <Navbar />
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -125,10 +133,13 @@ export default function SavedPropertiesPage() {
           <div className="text-center py-20 text-red-500">{error}</div>
         </div>
       </div>
+      <Footer />
+      </div>
     );
   }
 
   return (
+    <div><Navbar />
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
@@ -219,6 +230,8 @@ export default function SavedPropertiesPage() {
           </div>
         )}
       </div>
+    </div>
+    <Footer />
     </div>
   );
 }
