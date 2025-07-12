@@ -83,7 +83,13 @@ export default function RegisterPage() {
       console.log(`Firebase ${provider} ID Token (Register):`, idToken);
       localStorage.setItem("authToken", idToken); // Store the token
 
-      router.push("/");
+      // Check if user is admin and redirect accordingly
+      const token = await user.getIdTokenResult();
+      if (token.claims.admin || token.claims.role === "admin") {
+        router.push("/admin/overview");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -154,7 +160,14 @@ export default function RegisterPage() {
                 className="w-full text-base"
                 disabled={loading}
               >
-                {loading ? "Signing up..." : "Sign Up"}
+                {loading ? (
+                  <>
+                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 inline-block align-middle mr-2"></span>
+                    Signing up...
+                  </>
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
             </form>
 

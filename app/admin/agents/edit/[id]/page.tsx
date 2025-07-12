@@ -106,7 +106,12 @@ export default function EditAgentPage() {
   };
 
   if (!agent) {
-    return <div>Loading agent details...</div>; // Or display an error message
+    return (
+        <div className="py-20 text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-lg">Loading agent details...</p>
+        </div>
+    );
   }
 
   return (

@@ -401,8 +401,15 @@ const AgentRegistrationPage = () => {
               {error && <p className="text-sm text-red-600">{error}</p>}
 
               {/* Submit */}
-              <Button type="submit" disabled={loading} className="w-full my-4">
-                {loading ? "Registering..." : "Register"}
+              <Button type="submit" disabled={loading} className="w-full">
+                {loading ? (
+                  <>
+                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 inline-block align-middle mr-2"></span>
+                    Registering...
+                  </>
+                ) : (
+                  "Register"
+                )}
               </Button>
             </form>
           </CardContent>

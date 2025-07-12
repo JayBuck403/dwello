@@ -535,8 +535,15 @@ export default function CreateListingPage() {
                 </div>
 
                 {error && <p className="text-red-500 text-sm">{error}</p>}
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Submitting..." : "Submit Listing"}
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? (
+                    <>
+                      <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 inline-block align-middle mr-2"></span>
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit Listing"
+                  )}
                 </Button>
               </form>
             </CardContent>

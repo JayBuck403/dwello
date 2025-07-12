@@ -37,8 +37,13 @@ export default function LoginPage() {
       // Store the token in local storage or a state management solution
       localStorage.setItem("authToken", idToken);
 
-      // Redirect the user to the desired page
-      router.push("/");
+      // Check if user is admin and redirect accordingly
+      const token = await user.getIdTokenResult();
+      if (token.claims.admin || token.claims.role === "admin") {
+        router.push("/admin/overview");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       setError(error.message); // Display Firebase error message
       console.error("Firebase Login Error:", error);
@@ -52,7 +57,14 @@ export default function LoginPage() {
       const idToken = await user.getIdToken();
       console.log("Firebase Google ID Token:", idToken);
       localStorage.setItem("authToken", idToken);
-      router.push("/");
+      
+      // Check if user is admin and redirect accordingly
+      const token = await user.getIdTokenResult();
+      if (token.claims.admin || token.claims.role === "admin") {
+        router.push("/admin/overview");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       setError(error.message);
       console.error("Firebase Google Sign-in Error:", error);
@@ -66,7 +78,14 @@ export default function LoginPage() {
       const idToken = await user.getIdToken();
       console.log("Firebase Facebook ID Token:", idToken);
       localStorage.setItem("authToken", idToken);
-      router.push("/");
+      
+      // Check if user is admin and redirect accordingly
+      const token = await user.getIdTokenResult();
+      if (token.claims.admin || token.claims.role === "admin") {
+        router.push("/admin/overview");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       setError(error.message);
       console.error("Firebase Facebook Sign-in Error:", error);

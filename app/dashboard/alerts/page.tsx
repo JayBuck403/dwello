@@ -219,15 +219,18 @@ export default function AlertsPage() {
     return (
       <div>
         <Navbar />
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Property Alerts
-          </h1>
-          <div className="text-center py-20">Loading alerts...</div>
+        <div className="min-h-screen bg-gray-50 py-8">
+          <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+              Property Alerts
+            </h1>
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+              <p className="mt-4 text-lg">Loading alerts...</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <Footer />
+        <Footer />
       </div>
     );
   }

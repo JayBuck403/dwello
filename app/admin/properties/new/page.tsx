@@ -569,7 +569,14 @@ export default function CreateNewPropertyPage() {
 
             <div className="flex gap-4">
               <Button type="submit" disabled={loading} className="flex-1">
-                {loading ? "Creating..." : "Create Property"}
+                {loading ? (
+                  <>
+                    <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 inline-block align-middle mr-2"></span>
+                    Creating...
+                  </>
+                ) : (
+                  "Create Property"
+                )}
               </Button>
               <Button
                 type="button"

@@ -149,7 +149,14 @@ export default function AgentsListPage() {
   };
 
   if (loading) {
-    return <div>Loading agents...</div>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-lg">Loading agents...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {

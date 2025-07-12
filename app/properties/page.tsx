@@ -150,7 +150,12 @@ export default function PropertiesPage() {
   };
 
   if (loading) {
-    return <div className="py-20 text-center">Loading properties...</div>;
+    return (
+      <div className="py-20 text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+        <p className="mt-4 text-lg">Loading properties...</p>
+      </div>
+    );
   }
 
   if (error) {

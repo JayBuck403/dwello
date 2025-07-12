@@ -48,14 +48,10 @@ export default function FeaturedPropertiesSection() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-gray-50 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-primary mb-8 text-center">
-            Featured Properties
-          </h2>
-          <div className="text-center">Loading featured properties...</div>
-        </div>
-      </section>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+        <p className="mt-4 text-lg">Loading featured properties...</p>
+      </div>
     );
   }
 

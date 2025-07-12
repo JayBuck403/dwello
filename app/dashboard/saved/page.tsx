@@ -107,16 +107,9 @@ export default function SavedPropertiesPage() {
 
   if (loading) {
     return (
-      <div><Navbar />
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Saved Properties
-          </h1>
-          <div className="text-center py-20">Loading saved properties...</div>
-        </div>
-      </div>
-      <Footer />
+      <div className="text-center py-20">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+        <p className="mt-4 text-lg">Loading saved properties...</p>
       </div>
     );
   }
