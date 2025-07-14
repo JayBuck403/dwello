@@ -194,16 +194,17 @@ export default function PropertyPage() {
                 transition={{ type: "spring", stiffness: 300 }}
                 onClick={() => openImageModal(i)}
               >
-                <Image
+                <img
                   src={src}
                   alt={`Thumb ${i + 1}`}
                   width={128}
                   height={80}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-lg group-hover:opacity-75 transition-opacity"
                 />
-                {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center pointer-events-none">
-                  <ZoomIn className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div> */}
+                {/* Subtle zoom icon in the bottom right, not covering the image */}
+                <span className="absolute bottom-1 right-1 bg-black bg-opacity-60 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <ZoomIn className="h-4 w-4" />
+                </span>
               </motion.div>
             ))}
           </motion.div>
