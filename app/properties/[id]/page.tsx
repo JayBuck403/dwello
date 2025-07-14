@@ -188,7 +188,7 @@ export default function PropertyPage() {
             {property?.image_urls.map((src, i) => (
               <motion.div
                 key={i}
-                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow cursor-pointer relative group border-2 border-red-500 bg-white"
+                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow cursor-pointer relative group"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300 }}
