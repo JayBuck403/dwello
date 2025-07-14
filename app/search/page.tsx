@@ -147,8 +147,14 @@ export default function SearchPage() {
     setCurrentPage(page);
     
     const params = new URLSearchParams();
-    if (propertyType && propertyType !== "any") params.set("type", propertyType);
-    if (region && region !== "any") params.set("region", region);
+    if (propertyType && propertyType !== "any") {
+      params.set("type", propertyType);
+      params.set("property_type", propertyType); // Send both for backend compatibility
+    }
+    if (region && region !== "any") {
+      params.set("region", region);
+      params.set("location", region); // Send both for backend compatibility
+    }
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
     if (bedrooms && bedrooms !== "Any") params.set("bedrooms", bedrooms.replace("+", ""));
@@ -162,6 +168,10 @@ export default function SearchPage() {
     selectedAmenityIds.forEach((id) => params.append("amenities", id.toString()));
     params.set("page", page.toString());
     params.set("limit", pageSize.toString());
+    
+    // Update browser URL
+    const searchUrl = `/search?${params.toString()}`;
+    router.push(searchUrl, { scroll: false });
     
     try {
       const apiUrl = `https://dwello-backend-express.onrender.com/api/properties/?${params.toString()}`;
@@ -211,6 +221,9 @@ export default function SearchPage() {
     setHasSearched(false);
     setCurrentPage(1);
     setTotalPages(0);
+    
+    // Clear URL parameters
+    router.push("/search", { scroll: false });
   };
 
   const getActiveFiltersCount = () => {
