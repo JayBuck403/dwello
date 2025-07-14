@@ -123,7 +123,7 @@ export default function SearchPage() {
     if (landUnit) params.set("landUnit", landUnit);
     amenities.forEach((amenity) => params.append("amenities", amenity));
 
-    router.push(`/listings?${params.toString()}`);
+    router.push(`/properties?${params.toString()}`);
   };
 
   const handleReset = () => {
