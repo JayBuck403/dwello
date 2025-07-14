@@ -188,7 +188,7 @@ export default function PropertyPage() {
             {property?.image_urls.map((src, i) => (
               <motion.div
                 key={i}
-                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow cursor-pointer relative group"
+                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow cursor-pointer relative group border-2 border-red-500 bg-white"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -199,11 +199,11 @@ export default function PropertyPage() {
                   alt={`Thumb ${i + 1}`}
                   width={128}
                   height={80}
-                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center pointer-events-none">
+                {/* <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center pointer-events-none">
                   <ZoomIn className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
+                </div> */}
               </motion.div>
             ))}
           </motion.div>
