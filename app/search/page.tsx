@@ -148,8 +148,8 @@ export default function SearchPage() {
     
     const params = new URLSearchParams();
     if (propertyType && propertyType !== "any") {
-      params.set("type", propertyType);
-      params.set("property_type", propertyType); // Send both for backend compatibility
+      params.set("type", propertyType.toLowerCase());
+      params.set("property_type", propertyType.toLowerCase()); // Send both for backend compatibility
     }
     if (region && region !== "any") {
       params.set("region", region);
