@@ -29,6 +29,7 @@ import {
   Warehouse,
   BrickWall,
   Fence,
+  ZoomIn,
 } from "lucide-react";
 import Header from "@/components/header";
 import { motion } from "framer-motion";
@@ -37,6 +38,7 @@ import { useParams } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
+import ImageGalleryModal from "@/components/ImageGalleryModal";
 
 const amenities = [
   { icon: Wifi, label: "Wi-Fi" },
@@ -110,6 +112,8 @@ export default function PropertyPage() {
   const mapUrl = "https://maps.google.com/?cid=589853634268389156";
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -132,24 +136,46 @@ export default function PropertyPage() {
     if (id) fetchProperty();
   }, [id]);
 
+  const openImageModal = (index: number) => {
+    setSelectedImageIndex(index);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+  };
+
   return (
     <div>
       {/* Header */}
       <Header />
+
+      {/* Image Gallery Modal */}
+      <ImageGalleryModal
+        images={property?.image_urls || []}
+        initialIndex={selectedImageIndex}
+        isOpen={isImageModalOpen}
+        onClose={closeImageModal}
+        propertyTitle={property?.title}
+      />
 
       {/* Page Content */}
       <div className="max-w-screen-xl mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Main Image and Thumbnails */}
         <div className="lg:col-span-8 space-y-8">
           {/* Main Image */}
-          <div className="rounded-2xl overflow-hidden">
+          <div className="rounded-2xl overflow-hidden cursor-pointer relative" onClick={() => openImageModal(0)}>
             <Image
               src={property?.image_urls[0] || "/placeholder-image.webp"}
               alt="Main Property"
               width={1200}
               height={600}
-              className="w-full object-cover aspect-video"
+              className="w-full object-cover aspect-video hover:opacity-95 transition-opacity"
             />
+            <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white text-sm px-2 py-1 rounded-full flex items-center gap-1">
+              <ZoomIn className="h-4 w-4" />
+              Zoom
+            </div>
           </div>
 
           {/* Thumbnails */}
@@ -162,18 +188,22 @@ export default function PropertyPage() {
             {property?.image_urls.map((src, i) => (
               <motion.div
                 key={i}
-                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow"
+                className="w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 shadow cursor-pointer relative group"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300 }}
+                onClick={() => openImageModal(i)}
               >
                 <Image
                   src={src}
                   alt={`Thumb ${i + 1}`}
                   width={200}
                   height={150}
-                  className="w-full h-full object-cover cursor-pointer"
+                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
                 />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
+                  <ZoomIn className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </motion.div>
             ))}
           </motion.div>
