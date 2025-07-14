@@ -22,3 +22,12 @@ export function toSentenceCase(str: string) {
 
   return sentence;
 }
+
+export function formatCurrency(amount: number, currency: string = "GHS") {
+  return new Intl.NumberFormat("en-GH", {
+    style: "currency",
+    currency: currency === "GHS" ? "GHS" : currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}

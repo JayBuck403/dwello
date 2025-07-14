@@ -9,6 +9,7 @@ import { Heart, Eye, Phone } from "lucide-react";
 import { getAuthToken } from "@/components/getToken";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/header";
+import { formatCurrency } from "@/lib/utils";
 
 
 interface Property {
@@ -171,7 +172,7 @@ export default function SavedPropertiesPage() {
                   <p className="text-gray-600 mb-3">{property.location}</p>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-xl font-bold text-primary">
-                      {property.currency} {property.price?.toLocaleString()}
+                      {property.price ? formatCurrency(property.price, property.currency) : ''}
                     </span>
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       {property.bedrooms && (

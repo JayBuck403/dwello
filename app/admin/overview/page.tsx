@@ -31,6 +31,7 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import { auth } from "@/lib/firebase";
+import { formatCurrency } from "@/lib/utils";
 
 interface DashboardStats {
   total_users: number;
@@ -301,14 +302,7 @@ export default function AdminOverviewPage() {
     );
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-GH", {
-      style: "currency",
-      currency: "GHS",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {

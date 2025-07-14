@@ -9,6 +9,7 @@ import { Eye, Clock, MapPin } from "lucide-react";
 import { getAuthToken } from "@/components/getToken";
 import Navbar from "@/components/header";
 import Footer from "@/components/Footer";
+import { formatCurrency } from "@/lib/utils";
 
 interface Activity {
   id: string;
@@ -201,7 +202,7 @@ export default function ActivityPage() {
                             </p>
                             <p className="text-xs font-medium text-primary">
                               {activity.properties.currency}{" "}
-                              {activity.properties.price?.toLocaleString()}
+                              {activity.properties.price ? formatCurrency(activity.properties.price, activity.properties.currency) : ''}
                             </p>
                           </div>
                           <Link href={`/properties/${activity.properties.id}`}>

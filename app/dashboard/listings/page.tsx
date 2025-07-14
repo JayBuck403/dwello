@@ -9,6 +9,7 @@ import { Pencil, Eye, Trash } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
 import { getAuthToken } from "@/components/getToken";
+import { formatCurrency } from "@/lib/utils";
 
 interface Property {
   id: string;
@@ -19,6 +20,10 @@ interface Property {
   image_urls: string[];
   status: string;
   slug: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: string;
+  area_unit?: string;
 }
 
 export default function ManageListingsPage() {
@@ -146,9 +151,24 @@ export default function ManageListingsPage() {
                       {property.title}
                     </h3>
                     <p className="text-sm text-gray-600">{property.location}</p>
-                    <p className="text-sm font-bold text-primary mb-2">
-                      {property.currency} {property.price?.toLocaleString()}
-                    </p>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xl font-bold text-primary">
+                        {property.price ? formatCurrency(property.price, property.currency) : ''}
+                      </span>
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        {property.bedrooms && (
+                          <span>{property.bedrooms} beds</span>
+                        )}
+                        {property.bathrooms && (
+                          <span>{property.bathrooms} baths</span>
+                        )}
+                        {property.area && (
+                          <span>
+                            {property.area} {property.area_unit}
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
                     <div className="text-sm mb-4">
                       <span className="font-medium">Status:</span>{" "}

@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/lib/utils";
 
 const savedProperties = [
   {
@@ -275,7 +276,7 @@ function ActivityItem({
           {viewed ? `Viewed: ${property.title}` : property.title}
         </Link>
         <p className="text-sm text-gray-600">{property.location}</p>
-        {!viewed && <p className="text-sm text-primary">{property.price}</p>}
+        {!viewed && <p className="text-sm text-primary">{property.price ? formatCurrency(property.price, property.currency) : ''}</p>}
       </div>
     </div>
   );

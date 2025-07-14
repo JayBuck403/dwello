@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { formatCurrency } from "@/lib/utils";
 
 interface Properties {
   id: string;
@@ -225,7 +226,7 @@ export default function AgentProfilePage() {
                           <MapPin className="h-3 w-3" /> {property.location}
                         </p>
                         <p className="text-primary font-semibold text-sm">
-                          {property.price}
+                          {property.price ? formatCurrency(parseFloat(property.price), "GHS") : ''}
                         </p>
                         <Link
                           href={`/properties/${property.id}`}

@@ -35,6 +35,8 @@ import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
+import { formatCurrency } from "@/lib/utils";
+import Link from "next/link";
 
 const amenities = [
   { icon: Wifi, label: "Wi-Fi" },
@@ -55,6 +57,19 @@ interface PropertyAmenity {
   amenity_id: number | string;
 }
 
+interface Agent {
+  id: string;
+  name: string;
+  email: string;
+  profile_picture?: string;
+  phone_call?: string;
+  phone_whatsapp?: string;
+  title?: string;
+  bio?: string;
+  experience?: string;
+  slug?: string;
+}
+
 interface Property {
   id: string;
   title: string;
@@ -69,6 +84,7 @@ interface Property {
   region: string;
   description: string;
   property_amenities: PropertyAmenity[];
+  agents?: Agent;
 }
 
 const amenitiesMap: Record<number, { name: string; icon: JSX.Element }> = {
@@ -177,7 +193,7 @@ export default function PropertyPage() {
               <div className="text-right">
                 <p className="font-medium text-gray-700 text-left">Price</p>
                 <p className="text-3xl font-bold text-primary">
-                  {property?.currency}&nbsp;{property?.price}
+                  {property?.price ? formatCurrency(property.price, property.currency) : ''}
                 </p>
               </div>
             </div>
@@ -257,80 +273,91 @@ export default function PropertyPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-4 space-y-8">
-          {/* Host Card */}
+          {/* Agent Card */}
           <Card className="rounded-2xl shadow-sm">
             <CardContent className="p-6 space-y-5">
               <div className="flex items-center gap-4">
                 <div className="rounded-full overflow-hidden w-16 h-16 relative">
                   <Image
-                    src="/host.avif"
-                    alt="Host"
+                    src={property?.agents?.profile_picture || "/placeholder-avatar.avif"}
+                    alt={property?.agents?.name || "Agent"}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-lg">Jonathan Straus</h4>
+                  <h4 className="font-semibold text-lg">{property?.agents?.name || "Property Agent"}</h4>
                   <p className="text-sm text-gray-500">
-                    Joined in Sep 01, 2018
+                    {property?.agents?.title || "Real Estate Agent"}
                   </p>
-                  <a href="#" className="text-blue-500 text-sm">
-                    View profile
-                  </a>
+                  {property?.agents?.slug && (
+                    <Link href={`/agents/${property.agents.slug}`} className="text-blue-500 text-sm hover:underline">
+                      View profile
+                    </Link>
+                  )}
                 </div>
-                <div className="ml-auto text-sm text-gray-600">
-                  <span>⭐</span> 4.8 (198)
-                </div>
+                {property?.agents?.experience && (
+                  <div className="ml-auto text-sm text-gray-600">
+                    <span>⭐</span> {property.agents.experience} years exp.
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-gray-600">
-                I’m a postdoc working on cancer research. Just moved from Taiwan
-                to NY in 2017. Can’t tell you how much I love this city since my
-                first visit in 2010.
-              </p>
+              {property?.agents?.bio && (
+                <p className="text-sm text-gray-600">
+                  {property.agents.bio}
+                </p>
+              )}
               <div className="text-sm text-gray-700 space-y-1">
-                <p>
-                  <strong>Language:</strong> English
-                </p>
-                <p>
-                  <strong>Response rate:</strong> 100%
-                </p>
-                <p>
-                  <strong>Response time:</strong> Within an hour
-                </p>
+                {property?.agents?.email && (
+                  <p className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <span>{property.agents.email}</span>
+                  </p>
+                )}
+                {property?.agents?.phone_call && (
+                  <p className="flex items-center gap-2">
+                    <Phone className="h-4 w-4" />
+                    <span>{property.agents.phone_call}</span>
+                  </p>
+                )}
               </div>
               <div className="flex gap-2 pt-2">
                 {/* WhatsApp Button */}
-                <Button
-                  asChild
-                  className="flex-1 flex items-center justify-center gap-2 text-white hover:bg-green-600"
-                >
-                  <a
-                    href={`https://wa.me/+233501234567?text=Hello, I'm interested in the property: The Crystal Hyatt Place`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-full flex items-center justify-center gap-2"
+                {property?.agents?.phone_whatsapp && (
+                  <Button
+                    asChild
+                    className="flex-1 flex items-center justify-center gap-2 text-white hover:bg-green-600"
                   >
-                    <svg viewBox="0 0 32 32" fill="white" className="h-5 w-5">
-                      <path
-                        d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z"
-                        fill-rule="evenodd"
-                      ></path>
-                    </svg>
-                    WhatsApp
-                  </a>
-                </Button>
-                <Button
-                  asChild
-                  variant={"outline"}
-                  className="flex-1 flex items-center justify-center gap-2 text-primary border-primary hover:bg-primary/10"
-                >
-                  <a
-                    href={`tel:+233501234567`}
-                    className="w-full h-full flex items-center justify-center gap-2"
+                    <a
+                      href={`https://wa.me/${property.agents.phone_whatsapp}?text=Hello, I'm interested in the property: ${property?.title}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-full flex items-center justify-center gap-2"
+                    >
+                      <svg viewBox="0 0 32 32" fill="white" className="h-5 w-5">
+                        <path
+                          d=" M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z"
+                          fillRule="evenodd"
+                        ></path>
+                      </svg>
+                      WhatsApp
+                    </a>
+                  </Button>
+                )}
+                {property?.agents?.phone_call && (
+                  <Button
+                    asChild
+                    variant={"outline"}
+                    className="flex-1 flex items-center justify-center gap-2 text-primary border-primary hover:bg-primary/10"
                   >
-                    <Phone className="h-4 w-4" /> Call
-                  </a>
-                </Button>
+                    <a
+                      href={`tel:${property.agents.phone_call}`}
+                      className="w-full h-full flex items-center justify-center gap-2"
+                    >
+                      <Phone className="h-4 w-4" /> Call
+                    </a>
+                  </Button>
+                )}
               </div>
               {/* Social Sharing Buttons */}
               <div className="mt-6 text-center">
@@ -377,7 +404,8 @@ export default function PropertyPage() {
             {[
               {
                 imageUrl: "/nearby-1.avif",
-                price: "$1,500,000",
+                price: 1500000,
+                currency: "USD",
                 address: "100 West, 15th Street, San Francisco",
                 bathrooms: 2,
                 bedrooms: 2,
@@ -385,7 +413,8 @@ export default function PropertyPage() {
               },
               {
                 imageUrl: "/nearby-2.avif",
-                price: "$1,500,000",
+                price: 1500000,
+                currency: "USD",
                 address: "100 West, 18th Street, San Francisco",
                 bathrooms: 1,
                 bedrooms: 2,
@@ -393,7 +422,8 @@ export default function PropertyPage() {
               },
               {
                 imageUrl: "/nearby-3.avif",
-                price: "$1,500,000",
+                price: 1500000,
+                currency: "USD",
                 address: "Another Address, San Francisco",
                 bathrooms: 2,
                 bedrooms: 3,
@@ -411,7 +441,7 @@ export default function PropertyPage() {
                     />
                   </div>
                   <div className="py-2 px-2 text-sm">
-                    <p className="font-semibold">{property.price}</p>
+                    <p className="font-semibold">{formatCurrency(property.price, property.currency)}</p>
                     <p className="text-gray-500 text-xs mb-1">
                       {property.address}
                     </p>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Bed, Bath, Square } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
 
 const PropertyCard = ({ property }: { property: any }) => (
   <Card className="rounded-xl overflow-hidden hover:shadow-lg transition-all">
@@ -21,8 +22,7 @@ const PropertyCard = ({ property }: { property: any }) => (
           </h3>
           <p className="text-sm text-gray-600 mb-2">{property.location}</p>
           <p className="text-primary font-semibold text-sm">
-            <span>{property.currency}</span>&nbsp;
-            {property.price}
+            {property.price ? formatCurrency(property.price, property.currency) : ''}
           </p>
         </div>
         <div className="flex gap-4 mt-3 text-gray-700 text-sm">
