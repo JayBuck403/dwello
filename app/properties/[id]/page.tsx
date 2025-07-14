@@ -194,7 +194,7 @@ export default function PropertyPage() {
                 transition={{ type: "spring", stiffness: 300 }}
                 onClick={() => openImageModal(i)}
               >
-                <Image
+                <img
                   src={src}
                   alt={`Thumb ${i + 1}`}
                   width={200}
