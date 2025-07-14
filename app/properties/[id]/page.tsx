@@ -197,9 +197,8 @@ export default function PropertyPage() {
                 <Image
                   src={src}
                   alt={`Thumb ${i + 1}`}
-                  width={200}
-                  height={150}
-                  className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                  fill
+                  className="object-cover group-hover:opacity-75 transition-opacity"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center pointer-events-none">
                   <ZoomIn className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
