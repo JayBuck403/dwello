@@ -24,9 +24,21 @@ export function toSentenceCase(str: string) {
 }
 
 export function formatCurrency(amount: number, currency: string = "GHS") {
+  // Convert common currency symbols to valid ISO codes
+  let validCurrency = currency;
+  if (currency === "GH₵" || currency === "GHS") {
+    validCurrency = "GHS";
+  } else if (currency === "USD" || currency === "$") {
+    validCurrency = "USD";
+  } else if (currency === "EUR" || currency === "€") {
+    validCurrency = "EUR";
+  } else if (currency === "GBP" || currency === "£") {
+    validCurrency = "GBP";
+  }
+
   return new Intl.NumberFormat("en-GH", {
     style: "currency",
-    currency: currency === "GHS" ? "GHS" : currency,
+    currency: validCurrency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
