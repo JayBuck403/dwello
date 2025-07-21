@@ -20,6 +20,9 @@ import {
 } from "@/components/ui/popover";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
+import Navbar from "@/components/header";
+import Footer from "@/components/Footer";
+
 
 const specializationOptions = [
   "Apartments",
@@ -184,7 +187,11 @@ const AgentRegistrationPage = () => {
   };
 
   return (
+    <div>
+      <Navbar />
+    
     <div className="py-10 min-h-screen bg-muted">
+      
       <div className="container max-w-2xl px-4 mx-auto">
         <Card className="shadow-sm border rounded-2xl">
           <CardHeader>
@@ -310,19 +317,21 @@ const AgentRegistrationPage = () => {
                       <CommandGroup>
                         {specializationOptions.map((option) => (
                           <CommandItem key={option}>
-                            <div className="flex items-center space-x-2">
+                            <div
+                              className="flex items-center space-x-2"
+                              onClick={e => e.stopPropagation()}
+                              onMouseDown={e => e.stopPropagation()}
+                            >
                               <Checkbox
                                 id={`spec-${option}`}
-                                checked={selectedSpecializations.includes(
-                                  option
-                                )}
-                                onCheckedChange={() =>
-                                  toggleValue(
-                                    selectedSpecializations,
-                                    option,
-                                    setSelectedSpecializations
-                                  )
-                                }
+                                checked={selectedSpecializations.includes(option)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedSpecializations([...selectedSpecializations, option]);
+                                  } else {
+                                    setSelectedSpecializations(selectedSpecializations.filter((s) => s !== option));
+                                  }
+                                }}
                               />
                               <Label htmlFor={`spec-${option}`}>{option}</Label>
                             </div>
@@ -353,17 +362,21 @@ const AgentRegistrationPage = () => {
                       <CommandGroup>
                         {areaOptions.map((area) => (
                           <CommandItem key={area}>
-                            <div className="flex items-center space-x-2">
+                            <div
+                              className="flex items-center space-x-2"
+                              onClick={e => e.stopPropagation()}
+                              onMouseDown={e => e.stopPropagation()}
+                            >
                               <Checkbox
                                 id={`area-${area}`}
                                 checked={selectedAreas.includes(area)}
-                                onCheckedChange={() =>
-                                  toggleValue(
-                                    selectedAreas,
-                                    area,
-                                    setSelectedAreas
-                                  )
-                                }
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedAreas([...selectedAreas, area]);
+                                  } else {
+                                    setSelectedAreas(selectedAreas.filter((a) => a !== area));
+                                  }
+                                }}
                               />
                               <Label htmlFor={`area-${area}`}>{area}</Label>
                             </div>
@@ -415,6 +428,8 @@ const AgentRegistrationPage = () => {
           </CardContent>
         </Card>
       </div>
+    </div>
+    <Footer />
     </div>
   );
 };

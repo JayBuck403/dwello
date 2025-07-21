@@ -76,6 +76,31 @@ export default function CreateListingPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [agent, setAgent] = useState<any>(null);
+  const [checkingAgent, setCheckingAgent] = useState(true);
+
+  useEffect(() => {
+    const checkAgent = async () => {
+      try {
+        const token = await getAuthToken();
+        if (!token) throw new Error("No auth token");
+        const res = await fetch(
+          "https://dwello-backend-express.onrender.com/api/agents/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (!res.ok) throw new Error("Not an agent");
+        const data = await res.json();
+        setAgent(data);
+      } catch {
+        setAgent(null);
+      } finally {
+        setCheckingAgent(false);
+      }
+    };
+    checkAgent();
+  }, []);
 
   useEffect(() => {
     const fetchAmenities = async () => {
@@ -98,6 +123,30 @@ export default function CreateListingPage() {
 
     fetchAmenities();
   }, []);
+
+  if (checkingAgent) {
+    return <div>Loading...</div>;
+  }
+
+  if (!agent) {
+    return (
+      <div>
+        <Navbar />
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+          <Card className="p-8 max-w-md text-center">
+            <CardTitle className="mb-4">Become an Agent</CardTitle>
+            <p className="mb-6 text-gray-700">
+              Only registered agents can create listings. Register now to access agent features.
+            </p>
+            <Button onClick={() => router.push('/agents/registration')}>
+              Register as Agent
+            </Button>
+          </Card>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleAmenityChange = (id: number) => {
     setSelectedAmenities((prev) =>

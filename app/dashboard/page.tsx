@@ -94,13 +94,33 @@ export default function DashboardPage() {
         setAgent(data);
       } catch (error) {
         console.error("Failed to fetch agent data", error);
+        setAgent(null);
       }
     }
 
     fetchAgent();
   }, []);
 
-  // if (!agent) return <div className="p-8">Loading...</div>;
+  // If agent is null, show a message and a button to register as an agent
+  if (agent === null) {
+    return (
+      <div>
+        <Navbar />
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+          <Card className="p-8 max-w-md text-center">
+            <CardTitle className="mb-4">Become an Agent</CardTitle>
+            <p className="mb-6 text-gray-700">
+              You have not registered as an agent yet. Register now to access agent features and manage your listings.
+            </p>
+            <Button onClick={() => router.push('/agents/registration')}>
+              Register as Agent
+            </Button>
+          </Card>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
   return (
     <div>
       <Navbar />
