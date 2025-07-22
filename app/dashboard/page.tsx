@@ -70,6 +70,8 @@ interface Agent {
   name: string;
   email: string;
   profile_picture: string;
+  status?: string;
+  pending_profile_edits?: Record<string, any> | null;
 }
 
 export default function DashboardPage() {
@@ -90,14 +92,11 @@ export default function DashboardPage() {
         );
         if (!res.ok) throw new Error("Failed to fetch agent data");
         const data = await res.json();
-        console.log("Agent Data:", data);
         setAgent(data);
       } catch (error) {
-        console.error("Failed to fetch agent data", error);
         setAgent(null);
       }
     }
-
     fetchAgent();
   }, []);
 
@@ -121,11 +120,37 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  // Show pending approval message and summary if pending_profile_edits exists
+  const hasPendingEdits = agent.pending_profile_edits && Object.keys(agent.pending_profile_edits).length > 0;
+
   return (
     <div>
       <Navbar />
       <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-4">
+          {hasPendingEdits && (
+            <Card className="mb-8 border-yellow-400 border-2 bg-yellow-50">
+              <CardHeader>
+                <CardTitle className="text-yellow-700 flex items-center gap-2">
+                  <span>Profile Edits Pending Approval</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4 text-yellow-800">
+                  Your recent profile changes are pending admin approval. Your public profile will be updated once approved.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(agent.pending_profile_edits || {}).map(([key, value]) => (
+                    <div key={key} className="bg-white rounded p-3 shadow-sm border">
+                      <span className="font-semibold capitalize">{key.replace(/_/g, ' ')}:</span>
+                      <span className="ml-2 text-gray-700">{String(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <div className="grid md:grid-cols-4 gap-6">
             {/* Sidebar */}
             <aside className="md:col-span-1">

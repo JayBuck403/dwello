@@ -15,6 +15,7 @@ interface Agent {
   status: string;
   is_approved: boolean;
   created_at: string;
+  pending_profile_edits?: Record<string, any> | null;
 }
 
 export default function AgentsListPage() {
@@ -23,6 +24,7 @@ export default function AgentsListPage() {
   const [error, setError] = useState<string | null>(null);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const socketRef = useRef<any>(null);
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -148,6 +150,58 @@ export default function AgentsListPage() {
     }
   };
 
+  // Approve pending profile edits
+  const handleApproveEdits = async (id: string) => {
+    setPendingAction(id + '-approve');
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        alert("Authentication required");
+        return;
+      }
+      const response = await fetch(`http://localhost:8000/api/agents/${id}/approve-edits`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        setAgents((prev) => prev.map((a) => a.id === id ? { ...a, ...a.pending_profile_edits, pending_profile_edits: null, status: 'approved' } : a));
+        alert("Profile edits approved.");
+      } else {
+        alert("Failed to approve edits.");
+      }
+    } catch (error) {
+      alert("Error approving edits.");
+    } finally {
+      setPendingAction(null);
+    }
+  };
+
+  // Reject pending profile edits
+  const handleRejectEdits = async (id: string) => {
+    setPendingAction(id + '-reject');
+    try {
+      const token = await getAuthToken();
+      if (!token) {
+        alert("Authentication required");
+        return;
+      }
+      const response = await fetch(`http://localhost:8000/api/agents/${id}/reject-edits`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        setAgents((prev) => prev.map((a) => a.id === id ? { ...a, pending_profile_edits: null, status: 'approved' } : a));
+        alert("Profile edits rejected.");
+      } else {
+        alert("Failed to reject edits.");
+      }
+    } catch (error) {
+      alert("Error rejecting edits.");
+    } finally {
+      setPendingAction(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -163,6 +217,9 @@ export default function AgentsListPage() {
     return <div className="text-red-500">{error}</div>;
   }
 
+  // Filter agents with pending edits
+  const agentsWithPendingEdits = agents.filter(a => a.pending_profile_edits && Object.keys(a.pending_profile_edits).length > 0);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -171,6 +228,54 @@ export default function AgentsListPage() {
           <Button>Add New Agent</Button>
         </Link>
       </div>
+
+      {/* Pending Profile Edits Section */}
+      {agentsWithPendingEdits.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-yellow-700 mb-4">Pending Profile Edits</h2>
+          <div className="grid gap-6">
+            {agentsWithPendingEdits.map(agent => (
+              <div key={agent.id} className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 flex flex-col md:flex-row gap-6">
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-2 text-gray-800">Current Profile</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div><span className="font-medium">Name:</span> {agent.name}</div>
+                    <div><span className="font-medium">Email:</span> {agent.email}</div>
+                    <div><span className="font-medium">Phone:</span> {agent.phone_call}</div>
+                    <div><span className="font-medium">Status:</span> {agent.status}</div>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-2 text-gray-800">Pending Edits</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {Object.entries(agent.pending_profile_edits || {}).map(([key, value]) => (
+                      <div key={key}><span className="font-medium capitalize">{key.replace(/_/g, ' ')}:</span> {String(value)}</div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      disabled={pendingAction === agent.id + '-approve'}
+                      onClick={() => handleApproveEdits(agent.id)}
+                    >
+                      {pendingAction === agent.id + '-approve' ? 'Approving...' : 'Approve'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={pendingAction === agent.id + '-reject'}
+                      onClick={() => handleRejectEdits(agent.id)}
+                    >
+                      {pendingAction === agent.id + '-reject' ? 'Rejecting...' : 'Reject'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {agents.length > 0 ? (
         <div className="overflow-x-auto">

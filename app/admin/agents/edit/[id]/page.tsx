@@ -1,44 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useParams } from "next/navigation";
+import { getAuthToken } from "@/components/getToken";
 
 interface Agent {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone_call: string;
   bio: string;
   // Add other relevant agent properties
 }
-
-const mockAgents: Record<string, Agent> = {
-  "1": {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+233 50 XXX XXXX",
-    bio: "Experienced real estate agent specializing in residential properties.",
-  },
-  "2": {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    phone: "+233 24 XXX XXXX",
-    bio: "Dedicated to finding the perfect commercial spaces for businesses.",
-  },
-  "3": {
-    id: "3",
-    name: "Kwame Nkrumah",
-    email: "kwame.n@example.com",
-    phone: "+233 55 XXX XXXX",
-    bio: "Expert in land acquisition and property development.",
-  },
-};
 
 export default function EditAgentPage() {
   const params = useParams();
@@ -51,30 +27,37 @@ export default function EditAgentPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchAgent = async () => {
-      // Simulate fetching data based on the ID
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const mockAgentData = mockAgents[id];
-
-      if (mockAgentData) {
-        setAgent(mockAgentData);
-        setName(mockAgentData.name);
-        setEmail(mockAgentData.email);
-        setPhone(mockAgentData.phone);
-        setBio(mockAgentData.bio);
-      } else {
-        console.error("Agent not found with ID:", id);
-        // Optionally set an error state to display a message
+      setLoading(true);
+      setUpdateError("");
+      try {
+        const token = await getAuthToken();
+        if (!token) {
+          setUpdateError("Authentication required");
+          setLoading(false);
+          return;
+        }
+        const response = await fetch(`/api/agents/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) throw new Error("Failed to fetch agent");
+        const data = await response.json();
+        setAgent(data);
+        setName(data.name || "");
+        setEmail(data.email || "");
+        setPhone(data.phone_call || "");
+        setBio(data.bio || "");
+      } catch (error) {
+        setUpdateError("Failed to load agent details.");
+      } finally {
+        setLoading(false);
       }
     };
-
-    if (id) {
-      fetchAgent();
-    }
+    if (id) fetchAgent();
   }, [id]);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -82,35 +65,52 @@ export default function EditAgentPage() {
     setIsUpdating(true);
     setUpdateError("");
     setUpdateSuccess(false);
-
-    const updatedAgentData = {
-      name,
-      email,
-      phone,
-      bio,
-    };
-
     try {
-      // Simulate successful update
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("Updated agent data:", updatedAgentData);
-      setUpdateSuccess(true);
-      // Optionally redirect to the agents list page
-      router.push("/admin/agents");
-    } catch (error: any) {
-      console.error("Error updating agent:", error);
+      const token = await getAuthToken();
+      if (!token) {
+        setUpdateError("Authentication required");
+        setIsUpdating(false);
+        return;
+      }
+      const updatedAgentData = {
+        name,
+        email,
+        phone_call: phone,
+        bio,
+      };
+      const response = await fetch(`/api/agents/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedAgentData),
+      });
+      if (response.ok) {
+        setUpdateSuccess(true);
+        setTimeout(() => router.push("/admin/agents"), 1200);
+      } else {
+        setUpdateError("Failed to update agent. Please try again.");
+      }
+    } catch (error) {
       setUpdateError("Failed to update agent. Please try again.");
     } finally {
       setIsUpdating(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+        <p className="mt-4 text-lg">Loading agent details...</p>
+      </div>
+    );
+  }
+
   if (!agent) {
     return (
-        <div className="py-20 text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-lg">Loading agent details...</p>
-        </div>
+      <div className="py-20 text-center text-red-500">Agent not found.</div>
     );
   }
 
@@ -118,19 +118,13 @@ export default function EditAgentPage() {
     <div>
       <h1 className="text-2xl font-semibold mb-4">Edit Agent</h1>
       {updateSuccess && (
-        <div
-          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-          role="alert"
-        >
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Success!</strong>
           <span className="block sm:inline"> Agent updated successfully.</span>
         </div>
       )}
       {updateError && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-          role="alert"
-        >
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Error!</strong>
           <span className="block sm:inline">{updateError}</span>
         </div>
