@@ -31,7 +31,7 @@ export default function AddNewAgentPage() {
 
     try {
       // Replace with your actual API call to create a new agent
-      const response = await fetch("/api/agents", {
+      const response = await fetch("https://dwello-backend-express.onrender.com/api/agents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

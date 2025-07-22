@@ -41,7 +41,7 @@ export default function EditAgentPage() {
           setLoading(false);
           return;
         }
-        const response = await fetch(`/api/agents/${id}`, {
+        const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Failed to fetch agent");
@@ -78,7 +78,7 @@ export default function EditAgentPage() {
         phone_call: phone,
         bio,
       };
-      const response = await fetch(`/api/agents/${id}`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
