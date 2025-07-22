@@ -160,7 +160,7 @@ export default function AgentsListPage() {
         toast.error("Authentication required");
         return;
       }
-      const response = await fetch(`/api/agents/${id}/approve-edits`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/approve-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -186,7 +186,7 @@ export default function AgentsListPage() {
         toast.error("Authentication required");
         return;
       }
-      const response = await fetch(`/api/agents/${id}/reject-edits`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/reject-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
