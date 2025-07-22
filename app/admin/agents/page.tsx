@@ -38,7 +38,7 @@ export default function AgentsListPage() {
           return;
         }
 
-        const response = await fetch("http://localhost:8000/api/admin/agents", {
+        const response = await fetch("https://dwello-backend-express.onrender.com/api/admin/agents", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -100,7 +100,7 @@ export default function AgentsListPage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:8000/api/admin/agents/${id}`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/admin/agents/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ export default function AgentsListPage() {
         return;
       }
 
-      const response = await fetch(`http://localhost:8000/api/admin/agents/${id}/approve`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/admin/agents/${id}/approve`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -159,7 +159,7 @@ export default function AgentsListPage() {
         alert("Authentication required");
         return;
       }
-      const response = await fetch(`http://localhost:8000/api/agents/${id}/approve-edits`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/approve-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -185,7 +185,7 @@ export default function AgentsListPage() {
         alert("Authentication required");
         return;
       }
-      const response = await fetch(`http://localhost:8000/api/agents/${id}/reject-edits`, {
+      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/reject-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
