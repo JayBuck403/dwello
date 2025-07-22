@@ -63,7 +63,7 @@ export default function AgentProfileEditPage() {
       try {
         const token = await getAuthToken();
         if (!token) throw new Error("Authentication required");
-        const res = await fetch("/api/agents/me", {
+        const res = await fetch("https://dwello-backend-express.onrender.com/api/agents/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch agent profile");
@@ -111,7 +111,7 @@ export default function AgentProfileEditPage() {
     try {
       const token = await getAuthToken();
       if (!token) throw new Error("Authentication required");
-      const res = await fetch("/api/agents/me", {
+      const res = await fetch("https://dwello-backend-express.onrender.com/api/agents/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
