@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EllipsisVertical } from "lucide-react";
 import { getAuthToken } from "@/components/getToken";
 import { getSocket } from "../../../lib/socket";
+import { toast } from "sonner";
 
 interface Agent {
   id: string;
@@ -38,7 +39,7 @@ export default function AgentsListPage() {
           return;
         }
 
-        const response = await fetch("https://dwello-backend-express.onrender.com/api/admin/agents", {
+        const response = await fetch("http://localhost:8000/api/admin/agents", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -49,7 +50,7 @@ export default function AgentsListPage() {
         }
 
         const data = await response.json();
-        setAgents(data);
+        setAgents(Array.isArray(data) ? data : data.agents);
       } catch (e: any) {
         console.error("Could not fetch agents:", e);
         setError("Failed to load agents.");
@@ -96,11 +97,11 @@ export default function AgentsListPage() {
     try {
       const token = await getAuthToken();
       if (!token) {
-        alert("Authentication required");
+        toast.error("Authentication required");
         return;
       }
 
-      const response = await fetch(`https://dwello-backend-express.onrender.com/api/admin/agents/${id}`, {
+      const response = await fetch(`http://localhost:8000/api/admin/agents/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,13 +110,13 @@ export default function AgentsListPage() {
 
       if (response.ok) {
         setAgents(agents.filter(agent => agent.id !== id));
-        alert("Agent deleted successfully");
+        toast.success("Agent deleted successfully");
       } else {
-        alert("Failed to delete agent");
+        toast.error("Failed to delete agent");
       }
     } catch (error) {
       console.error("Error deleting agent:", error);
-      alert("Error deleting agent");
+      toast.error("Error deleting agent");
     }
   };
 
@@ -123,11 +124,11 @@ export default function AgentsListPage() {
     try {
       const token = await getAuthToken();
       if (!token) {
-        alert("Authentication required");
+        toast.error("Authentication required");
         return;
       }
 
-      const response = await fetch(`https://dwello-backend-express.onrender.com/api/admin/agents/${id}/approve`, {
+      const response = await fetch(`http://localhost:8000/api/admin/agents/${id}/approve`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -140,13 +141,13 @@ export default function AgentsListPage() {
             ? { ...agent, status: 'approved', is_approved: true }
             : agent
         ));
-        alert("Agent approved successfully");
+        toast.success("Agent approved successfully");
       } else {
-        alert("Failed to approve agent");
+        toast.error("Failed to approve agent");
       }
     } catch (error) {
       console.error("Error approving agent:", error);
-      alert("Error approving agent");
+      toast.error("Error approving agent");
     }
   };
 
@@ -156,21 +157,21 @@ export default function AgentsListPage() {
     try {
       const token = await getAuthToken();
       if (!token) {
-        alert("Authentication required");
+        toast.error("Authentication required");
         return;
       }
-      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/approve-edits`, {
+      const response = await fetch(`/api/agents/${id}/approve-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         setAgents((prev) => prev.map((a) => a.id === id ? { ...a, ...a.pending_profile_edits, pending_profile_edits: null, status: 'approved' } : a));
-        alert("Profile edits approved.");
+        toast.success("Profile edits approved.");
       } else {
-        alert("Failed to approve edits.");
+        toast.error("Failed to approve edits.");
       }
     } catch (error) {
-      alert("Error approving edits.");
+      toast.error("Error approving edits.");
     } finally {
       setPendingAction(null);
     }
@@ -182,21 +183,21 @@ export default function AgentsListPage() {
     try {
       const token = await getAuthToken();
       if (!token) {
-        alert("Authentication required");
+        toast.error("Authentication required");
         return;
       }
-      const response = await fetch(`https://dwello-backend-express.onrender.com/api/agents/${id}/reject-edits`, {
+      const response = await fetch(`/api/agents/${id}/reject-edits`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         setAgents((prev) => prev.map((a) => a.id === id ? { ...a, pending_profile_edits: null, status: 'approved' } : a));
-        alert("Profile edits rejected.");
+        toast.success("Profile edits rejected.");
       } else {
-        alert("Failed to reject edits.");
+        toast.error("Failed to reject edits.");
       }
     } catch (error) {
-      alert("Error rejecting edits.");
+      toast.error("Error rejecting edits.");
     } finally {
       setPendingAction(null);
     }
