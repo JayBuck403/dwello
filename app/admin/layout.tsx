@@ -20,6 +20,7 @@ export default function AdminLayout({
 
   const navLinks = [
     { href: "/admin/overview", label: "Overview", icon: BarChart3 },
+    { href: "/admin/agents", label: "Manage Agents", icon: Users },
     { href: "/admin/users", label: "Manage Users", icon: Users },
     { href: "/admin/properties", label: "Manage Listings", icon: House },
     { href: "/admin/blog/new", label: "New Blog Post", icon: Newspaper },
